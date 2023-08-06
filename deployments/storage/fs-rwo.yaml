@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-fs-rwo
+  labels:
+    app: pod-fs-rwo
+spec:
+#  storageClassName: ocs-storagecluster-cephfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-fs-rwo
+  labels:
+    app: pod-fs-rwo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-fs-rwo
+  template:
+    metadata:
+      labels:
+        app: pod-fs-rwo
+    spec:
+      containers:
+      - name: pod-fs-rwo
+        image: ubi8
+        command: [ "/bin/bash", "-c", "sleep infinity" ]
+        volumeMounts:
+        - mountPath: /pvc
+          name: pvc-fs-rwo
+      volumes:
+      - name: pvc-fs-rwo
+        persistentVolumeClaim:
+          claimName: pvc-fs-rwo
+

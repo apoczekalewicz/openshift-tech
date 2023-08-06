@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-block-rwx
+  labels:
+    app: pod-block-rwx
+spec:
+#  storageClassName: ocs-storagecluster-rbd
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Block
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-block-rwx
+  labels:
+    app: pod-block-rwx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pod-block-rwx
+  template:
+    metadata:
+      labels:
+        app: pod-block-rwx
+    spec:
+      containers:
+      - name: pod-block-rwx
+        image: ubi8
+        command: [ "/bin/bash", "-c", "sleep infinity" ]
+        volumeDevices:
+        - name: pvc-block-rwx
+          devicePath: /dev/pvc
+      volumes:
+      - name: pvc-block-rwx
+        persistentVolumeClaim:
+          claimName: pvc-block-rwx
+

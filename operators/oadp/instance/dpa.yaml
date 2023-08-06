@@ -1,0 +1,64 @@
+apiVersion: oadp.openshift.io/v1alpha1
+kind: DataProtectionApplication
+metadata:
+  name: dpa
+  namespace: openshift-adp
+spec:
+
+  backupLocations:
+    - velero:
+        config:
+          profile: "default"
+          region: minio
+          s3Url: http://minio-hl.minio.svc.cluster.local:9000
+          insecureSkipTLSVerify: "true"
+          s3ForcePathStyle: "true"
+        provider: aws
+        default: true
+        credential:
+          key: cloud
+          name: cloud-credentials
+        objectStorage:
+          bucket: backup
+          prefix: oadp
+
+  configuration:
+    restic:
+      enable: true
+      podConfig: 
+        resourceAllocations:
+          limits:
+            cpu: "1"
+            memory: 1024Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+
+    velero:
+      defaultPlugins:
+        - openshift
+        - aws
+        - csi
+        - vsm
+      podConfig:
+        resourceAllocations: 
+          limits:
+            cpu: "1"
+            memory: 1024Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+
+  features:
+    dataMover:
+      enable: false
+      credentialName: vsm-restic
+      maxConcurrentBackupVolumes: "3" 
+      maxConcurrentRestoreVolumes: "3" 
+      pruneInterval: "14" 
+      volumeOptionsForStorageClasses: 
+        managed-csi:
+          destinationVolumeOptions:
+            storageClassName: managed-csi
+          sourceVolumeOptions:
+            storageClassName: managed-csi

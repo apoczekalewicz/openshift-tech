@@ -1,0 +1,46 @@
+1. operator-oadp i ew. volsync
+2. s3 storage (http://minio-hl.minio.svc.cluster.local:9000) - bucket: "backup", l: apoczeka
+3. Stworzenie wlasnych instancji klas snapshotu aby byly retain i mialy informacje, ze sa dla odp:
+
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: velero-csi-azuredisk-vsc
+  labels:
+    velero.io/csi-volumesnapshot-class: "true"
+driver: disk.csi.azure.com
+deletionPolicy: Retain
+
+driver mowi jaka storageclass jest skorelowana
+
+4. create instance
+
+w zaleznosci czy chcemy czy nie ustawiamy:
+  features:
+    dataMover:
+      enable: true
+
+vsm - uzywa swojego wlasnego hasla do restica - dlatego ma oddzielny secret
+
+Infos:
+only one storageClass can have: annotation snapshot.storage.kubernetes.io/is-default-class: true
+only one volumeSnapshotClass can have: annotation snapshot.storage.kubernetes.io/is-default-class: true
+
+----------------
+
+1. oc new-project project-demo
+2. git clone https://github.com/apoczekalewicz/openshift-applications.git
+3. cd openshift-applications/persistent-app/resources
+4. oc create -f .
+5. Realizacja backupu - 3 scenariusze:
+a. backup1-restic.yaml
+b. backup-snapshot (z instancja dpa z dataMover enable: false)
+c. backup-snapshot (z instancja dpa z dataMover enable: true)
+
+Restore to: oc create -f backup-restore.yaml
+
+Po kazdym backupie:
+oc create -f delete-backup.yaml
+
+*Jesli recznie usuwamy cos z S3 to najlepiej usunac instancje CR resticrepository
+*Odtwarzanie na inne klastry jest latwe - bo jesli dodamy instancje DPA ze wskazaniem na odpowiednie S3 i bucket - to sa tam wszystkie metadane tworzonych backupow

@@ -22,8 +22,10 @@ oc new-project etherpad
 oc describe ReplicationDestination
 
 5. Cluster1:
-- wylaczamy aplikacje (np oc label managedcluster/local-cluster etherpad-)
+- wylaczamy aplikacje oc scale --replicas=0 deployment/etherpad
 - robimy obiekt replicationsource (tu musi byc wpisany adres z punktu 4) ewentualnie jesli obiekt juz byl to robimy w replicationsource zmiane w spec.trigger.manual na inna wartosc
+- wyrzucamy aplikacje (np oc label managedcluster/local-cluster etherpad-) (najpierw robilismy scalowanie aby aplikacja nie dzialala, nie robila writow, ale dopiero tu usuwamy - bo ten krok usuwa tez PV)
+
 
 6. Cluster2:
 - uruchamiamy aplikacje

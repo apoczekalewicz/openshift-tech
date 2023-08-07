@@ -1,0 +1,15 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: database-source
+spec:
+  sourcePVC: db-pvc
+  trigger:
+    manual: rep1
+  rsync:
+    sshKeys: volsync-rsync-dest-src-database-destination
+    address: 34.79.103.70
+    copyMethod: Snapshot
+#    storageClassName: standard-csi
+#    volumeSnapshotClassName: csi-gce-pd-vsc

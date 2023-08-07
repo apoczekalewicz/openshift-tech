@@ -1,0 +1,14 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: mydest
+spec:
+  rsync:
+    copyMethod: Direct
+    capacity: 1Gi
+    accessModes: ["ReadWriteOnce"]
+    sshKeys: volsync-rsync-dest-dest-database-destination
+    serviceType: LoadBalancer
+    destinationPVC: db-pvc
+#    storageClassName: standard-csi

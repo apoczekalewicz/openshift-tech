@@ -1,0 +1,33 @@
+git clone https://github.com/apoczekalewicz/openshift-applications.git
+cd etherpad
+
+1. Cluster1 - Wykreowanie aplikacji:
+
+Albo:
+oc new-project etherpad
+oc create -f resources/
+
+Albo:
+oc create -f multisite-deployment/
+i zarzadzanie poprzez:
+oc label managedcluster/local-cluster etherpad=true / oc label managedcluster/local-cluster etherpad-
+
+2. Cluster2 - Stworzenie projektu
+oc new-project etherpad
+
+3. Stworzenie pustego PVC (bo przy technice Direct na Destination potrzebny jest istniejacy volumen do kopiowania) 
+   Stworzenie secreta do SSH i replicationdestination (wszystkie resourcy w katalogu: destination)
+
+4. Sprawdzenie adresu serwera SSH (LoadBalancer)
+oc describe ReplicationDestination
+
+5. Cluster1:
+- wylaczamy aplikacje (np oc label managedcluster/local-cluster etherpad-)
+- robimy obiekt replicationsource (tu musi byc wpisany adres z punktu 4) ewentualnie jesli obiekt juz byl to robimy w replicationsource zmiane w spec.trigger.manual na inna wartosc
+
+6. Cluster2:
+- uruchamiamy aplikacje
+
+albo wgranie plikow oc create -f resources/
+albo
+oc label managedcluster/gcp1 etherpad=true 

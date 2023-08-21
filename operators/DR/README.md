@@ -72,3 +72,13 @@ spec:
   action: "Relocate"
 
 gdzie action to moze byc Relocate lub Failover
+
+
+
+
+
+
+
+----------------
+
+usuwanie aplikacji poza normalnym usunieciem to wejscie na HUB cluster w installed operators w namespace danej aplikacji - operator DR HUB i usuniecie CR drplacementpolicy

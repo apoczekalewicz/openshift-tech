@@ -50,7 +50,8 @@ oc get serviceexport -n openshift-storage
 
 
 Wgranie aplikacji:
-app/ <- albo z subscription cephfs albo ArgoCD z RBD
+github.com/apoczekalewicz/openshift-applications/busybox-persistent-timestamps/deployments
+albo z subscription cephfs albo ArgoCD z RBD
 
 
 -----------------------

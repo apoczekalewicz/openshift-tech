@@ -1,0 +1,65 @@
+apiVersion: v1                    
+kind: Namespace
+metadata:
+  name: busybox
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  labels:
+    app: busybox
+  name: busybox
+  namespace: openshift-gitops
+spec:
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchExpressions:
+            - key: 'name'
+              operator: In
+              values: ['local-cluster']
+  clusterSets:
+    - default
+---
+apiVersion: cluster.open-cluster-management.io/v1beta2
+kind: ManagedClusterSetBinding
+metadata:
+  namespace: busybox
+  name: default
+spec:
+  clusterSet: default
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: busybox
+  namespace: openshift-gitops
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: busybox
+        requeueAfterSeconds: 10
+  template:
+    metadata:
+      name: busybox-{{name}}
+      labels:
+        velero.io/exclude-from-backup: "true"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/apoczekalewicz/openshift-applications.git
+        targetRevision: master
+        path: busybox-persistent-timestamps/resources/busybox-rbd
+      destination:
+        namespace: busybox
+        server: "{{server}}"
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+          - PruneLast=true

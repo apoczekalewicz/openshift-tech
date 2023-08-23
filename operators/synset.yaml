@@ -1,0 +1,19 @@
+---
+apiVersion: hive.openshift.io/v1
+kind: SyncSet
+metadata:
+  name: syncset1
+spec:
+  clusterDeploymentRefs:
+  - name: gocp1
+
+  resourceApplyMode: Upsert
+
+  resources:
+  - apiVersion: user.openshift.io/v1
+    kind: Group
+    metadata:
+      name: mojagrupa
+    users:
+    - myuser
+

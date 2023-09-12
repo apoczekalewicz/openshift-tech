@@ -5,7 +5,7 @@ metadata:
   labels:
     app: pod-block-rwo
 spec:
-#  storageClassName: ocs-storagecluster-rbd
+#  storageClassName: ocs-storagecluster-ceph-rbd
   accessModes:
     - ReadWriteOnce
   resources:

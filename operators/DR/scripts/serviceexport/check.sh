@@ -1,5 +1,5 @@
-c1
+cluster1
 oc get serviceexport -n openshift-storage
-c2
+cluster2
 oc get serviceexport -n openshift-storage
 

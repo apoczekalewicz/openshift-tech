@@ -1,4 +1,4 @@
-c1
+cluster1
 oc get pod -n openshift-storage | grep osd
-c2
+cluster2
 oc get pod -n openshift-storage | grep osd

@@ -9,7 +9,7 @@ spec:
   preferredCluster: cluster2
   action: "Relocate"
 
-drPolicyRef:
+  drPolicyRef:
     apiVersion: ramendr.openshift.io/v1alpha1
     kind: DRPolicy
     name: cluster1-cluster2-1m
